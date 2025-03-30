@@ -1,4 +1,3 @@
-from checker.session import TSession, TelegramClient
 import logging
 import asyncio
 

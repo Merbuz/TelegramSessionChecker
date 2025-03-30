@@ -18,17 +18,17 @@ class BotNet:
         for tdata in self.tdatas:
             await tdata.convert_to_session()
 
+    async def valid_sessions(self) -> List[TSession]:
+        return [session for session in self.sessions if await session.is_valid()]  # noqa: E501
+
     async def join_channel(self, invite_link: str) -> None:
-        for session in self.sessions:
-            if await session.is_valid():
-                await session.join_channel(invite_link)
+        for session in await self.valid_sessions():
+            await session.join_channel(invite_link)
 
     async def start_bot(self, bot_link: str) -> None:
-        for session in self.sessions:
-            if await session.is_valid():
-                await session.start_bot(bot_link)
+        for session in await self.valid_sessions():
+            await session.start_bot(bot_link)
 
     async def click_button(self, bot_link: str, button_text: str) -> None:
-        for session in self.sessions:
-            if await session.is_valid():
-                await session.click_button(bot_link, button_text)
+        for session in await self.valid_sessions():
+            await session.click_button(bot_link, button_text)

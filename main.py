@@ -10,7 +10,7 @@ def setup():
 
     logger.setLevel(logging.INFO)
 
-    file_handler = logging.FileHandler('logs.log', mode='w')
+    file_handler = logging.FileHandler('logs.log', mode='w', encoding="utf-8")
     file_handler.setFormatter(
         logging.Formatter('"%(asctime)s - [%(levelname)s] -  %(name)s - (%(filename)s).%(funcName)s(%(lineno)d) - %(message)s"')  # noqa: E501
     )
@@ -32,18 +32,25 @@ async def main():
     logging.info('Hello')
 
     botnet = BotNet()
-    await botnet.convert_tdatas()
 
     for session in await botnet.valid_sessions():
-        session_me = await session.get_me()
+        await session.connect()
 
-        if session_me:
-            logging.info(f'Session ID - {session_me.id}, @{session_me.username} - valid!')  # noqa: E501
+        try:
+            session_me = await session.get_me()
+
+            if session_me:
+                logging.info(f'Session ID - {session_me.id}, @{session_me.username} - valid!')  # noqa: E501
+
+        except Exception:
+            logging.info('Session is valid!')
+
+        session.disconnect()
 
     logging.info(f'Valid sessions - {len(await botnet.valid_sessions())}')
 
     while True:
-        action = input('Select an action:\n1 - Subscribe to the channel\n2 - Go to the bot\n3 - Go to the bot and click\n')  # noqa: E501
+        action = input('Select an action:\n1 - Subscribe to the channel\n2 - Go to the bot\n3 - Go to the bot and click\n4 - Close checker\n')  # noqa: E501
 
         match action:
             case '1':
@@ -63,6 +70,9 @@ async def main():
                 await botnet.start_bot(bot)
                 await asyncio.sleep(2)
                 await botnet.click_button(bot, button_text)
+
+            case '4':
+                break
 
 if __name__ == "__main__":
     asyncio.run(main())

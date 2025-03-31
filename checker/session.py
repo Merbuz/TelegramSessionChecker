@@ -130,7 +130,12 @@ class TSession:
             except Exception:
                 logging.error('The specified bot was not found')
 
-    async def disconnect(self) -> None:
+    async def connect(self) -> None:
+        """Starts the session"""
+
+        await self.client.connect()
+
+    def disconnect(self) -> None:
         """Closes the session"""
 
-        await self.disconnect()
+        self.client.disconnect()

@@ -36,14 +36,7 @@ async def main():
     for session in await botnet.valid_sessions():
         await session.connect()
 
-        try:
-            session_me = await session.get_me()
-
-            if session_me:
-                logging.info(f'Session ID - {session_me.id}, @{session_me.username} - valid!')  # noqa: E501
-
-        except Exception:
-            logging.info('Session is valid!')
+        logging.info('Session is valid!')
 
         session.disconnect()
 
